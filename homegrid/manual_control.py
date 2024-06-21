@@ -2,6 +2,7 @@
 
 import gym
 
+from homegrid.language_wrappers import LanguageWrapper
 from homegrid.window import Window
 import matplotlib.pyplot as plt
 from tokenizers import Tokenizer
@@ -111,6 +112,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     env = gym.make(args.env, disable_env_checker=True)
+    env = LanguageWrapper(env, preread_max=100, lang_types=["task", "dynamics"])
 
     for k in plt.rcParams:
       if "keymap" in k:
