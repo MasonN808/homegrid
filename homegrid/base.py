@@ -860,6 +860,76 @@ class MiniGridEnv(gym.Env):
         return np.array((-dy, dx))
 
     @property
+    def right_pos(self):
+        """
+        Get the position to the right of the agent.
+        """
+
+        ax, ay = self.agent_pos
+        rx, ry = self.right_vec
+        return ax + rx, ay + ry
+
+    @property
+    def left_pos(self):
+        """
+        Get the position to the left of the agent.
+        """
+
+        ax, ay = self.agent_pos
+        dx, dy = self.dir_vec
+        return (ax + dy, ay - dx)
+
+    @property
+    def back_pos(self):
+        """
+        Get the position to the back of the agent.
+        """
+
+        ax, ay = self.agent_pos
+        dx, dy = self.dir_vec
+        return (ax - dx, ay - dy)
+
+    @property
+    def front_left_pos(self):
+        """
+        Get the position to the front-left of the agent.
+        """
+
+        ax, ay = self.agent_pos
+        dx, dy = self.dir_vec
+        return (ax + dx - dy, ay + dy + dx)
+
+    @property
+    def front_right_pos(self):
+        """
+        Get the position to the front-right of the agent.
+        """
+
+        ax, ay = self.agent_pos
+        dx, dy = self.dir_vec
+        return (ax + dx + dy, ay + dy - dx)
+
+    @property
+    def back_left_pos(self):
+        """
+        Get the position to the back-left of the agent.
+        """
+
+        ax, ay = self.agent_pos
+        dx, dy = self.dir_vec
+        return (ax - dx - dy, ay - dy + dx)
+    
+    @property
+    def back_right_pos(self):
+        """
+        Get the position to the back-right of the agent.
+        """
+
+        ax, ay = self.agent_pos
+        dx, dy = self.dir_vec
+        return (ax - dx + dy, ay - dy - dx)
+
+    @property
     def front_pos(self):
         """
         Get the position of the cell that is right in front of the agent

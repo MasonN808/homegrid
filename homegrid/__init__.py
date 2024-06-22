@@ -1,6 +1,6 @@
 from gym.envs.registration import register
 from homegrid.homegrid_base import HomeGridBase
-from homegrid.language_wrappers import MultitaskWrapper, LanguageWrapper
+from homegrid.language_wrappers import MultitaskWrapper, LanguageWrapper, TextObservationWrapper
 from homegrid.wrappers import RGBImgPartialObsWrapper, FilterObsWrapper
 
 import warnings
@@ -13,6 +13,7 @@ class HomeGrid:
         env = HomeGridBase(*args, **kwargs)
         env = RGBImgPartialObsWrapper(env)
         env = FilterObsWrapper(env, ["image"])
+        env = TextObservationWrapper(env)
         env = MultitaskWrapper(env)
         env = LanguageWrapper(
             env,

@@ -302,6 +302,54 @@ class HomeGridBase(MiniGridEnv):
       self.render_with_text()
     obs = self.gen_obs()
 
+    right_pos = self.right_pos
+    left_pos = self.left_pos
+    right_pos = self.right_pos
+    back_pos = self.back_pos
+    front_right_pos = self.front_right_pos
+    front_left_pos = self.front_left_pos
+    back_left_pos = self.back_left_pos
+    back_right_pos = self.back_right_pos
+
+    current_cell = self.grid.get(*self.agent_pos)
+    current_floor = self.grid.get_floor(*self.agent_pos)
+
+    left_cell = self.grid.get(*left_pos)
+    left_floor = self.grid.get_floor(*left_pos)
+
+    right_cell = self.grid.get(*right_pos)
+    right_floor = self.grid.get_floor(*right_pos)
+
+    back_cell = self.grid.get(*back_pos)
+    back_floor = self.grid.get_floor(*back_pos)
+
+    fwd_right_cell = self.grid.get(*front_right_pos)
+    fwd_right_floor = self.grid.get_floor(*front_right_pos)
+
+    fwd_left_cell = self.grid.get(*front_left_pos)
+    fwd_left_floor = self.grid.get_floor(*front_left_pos)
+
+    back_left_cell = self.grid.get(*back_left_pos)
+    back_left_floor = self.grid.get_floor(*back_left_pos)
+
+    back_right_cell = self.grid.get(*back_right_pos)
+    back_right_floor = self.grid.get_floor(*back_right_pos)
+
+    cell_3x3 = [
+        [fwd_left_cell.name if fwd_left_cell else None, fwd_cell.name if fwd_cell else None, fwd_right_cell.name if fwd_right_cell else None],
+        [left_cell.name if left_cell else None, current_cell.name if current_cell else None, right_cell.name if right_cell else None],
+        [back_left_cell.name if back_left_cell else None, back_cell.name if back_cell else None, back_right_cell.name if back_right_cell else None]
+    ]
+    print(f"==>> array_3x3: {cell_3x3}")
+
+    floor_3x3 = [
+        [fwd_left_floor.name if fwd_left_floor else None, fwd_floor.name if fwd_floor else None, fwd_right_floor.name if fwd_right_floor else None],
+        [left_floor.name if left_floor else None, current_floor.name if current_floor else None, right_floor.name if right_floor else None],
+        [back_left_floor.name if back_left_floor else None, back_floor.name if back_floor else None, back_right_floor.name if back_right_floor else None]
+    ]
+    print(f"==>> floor_3x3: {floor_3x3}")
+
+
     # For rendering purposes
     self.prev_action = HomeGridBase.Actions(action).name
     if success:
@@ -360,6 +408,8 @@ class HomeGridBase(MiniGridEnv):
       "symbolic_state": self.get_full_symbolic_state(),
       "events": events,
       "all_events": self.all_events,
+      "cell_3x3": cell_3x3, # Used to generate language observation if wrapper applied
+      "floor_3x3": floor_3x3,
     }
 
     return obs, reward, terminated, truncated, info
@@ -408,4 +458,4 @@ class HomeGridBase(MiniGridEnv):
     draw.text((0, 0), text, (0, 0, 0))
     draw.text((0, 45), "Action: {}".format(self._env.prev_action), (0, 0, 0))
     img = np.asarray(img)
-    return im
+    return img
