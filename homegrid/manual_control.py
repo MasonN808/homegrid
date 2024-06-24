@@ -20,13 +20,16 @@ def reset(env, window, seed=None, agent_view=False):
 
 def step(env, window, action, agent_view=False):
     obs, reward, terminated, truncated, info = env.step(action)
-    print(info["symbolic_state"])
+    # print(f"==>> obs: {obs}")
+    # print(f"==>> obs: {obs['image'].shape}")
+    print(f"==>> info['text_observation']: {info['text_observation']}")
+    # print(info["symbolic_state"])
     token = tok.decode([obs["token"]])
-    print(f"step={env.step_cnt}, reward={reward:.2f}")
-    print("Token: ", token)
-    print("Language: ", obs["log_language_info"] if "log_language_info" in obs else "None")
-    print("Task: ", env.task)
-    print("-"*20)
+    # print(f"step={env.step_cnt}, reward={reward:.2f}")
+    # print("Token: ", token)
+    # print("Language: ", obs["log_language_info"] if "log_language_info" in obs else "None")
+    # print("Task: ", env.task)
+    # print("-"*20)
     window.set_caption(
         f"r={reward:.2f} token_id={obs['token']} token="
         f"{token} \ncurrent: {obs['log_language_info'][:50]}...")
@@ -112,7 +115,6 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     env = gym.make(args.env, disable_env_checker=True)
-    env = LanguageWrapper(env, preread_max=100, lang_types=["task", "dynamics"])
 
     for k in plt.rcParams:
       if "keymap" in k:

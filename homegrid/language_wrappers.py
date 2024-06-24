@@ -327,3 +327,31 @@ class LanguageWrapper(gym.Wrapper):
     obs = self.add_language_to_obs(obs, info)
     self.last_dist = info["log_dist_goal"]
     return obs, rew, term, trunc, info
+
+class TextObservationWrapper(gym.Wrapper):
+    def __init__(self, env):
+        super().__init__(env)
+
+    def step(self, action):
+        observation, reward, done, truncated, info = self.env.step(action)
+        info['text_observation'] = self.generate_text_observation(info['cell_3x3'], info['floor_3x3'])
+        return observation, reward, done, truncated, info
+
+    def reset(self, **kwargs):
+        observation, info = self.env.reset(**kwargs)
+        return observation, info
+
+    def generate_text_observation(self, cell_3x3, floor_3x3):
+        text_description = "Around the agent:\n"
+        directions = ['top-right', 'top', 'top-left', 'left', 'center', 'right', 'bottom-right', 'bottom', 'bottom-left']
+        
+        for i in range(3):
+            for j in range(3):
+                direction = directions[i * 3 + j]
+                cell = cell_3x3[i][j]
+                floor = floor_3x3[i][j]
+                if cell is None:
+                  cell = "nothing"
+                text_description += f"At {direction}, there is {cell} on the {floor} floor.\n"
+        
+        return text_description.strip()
