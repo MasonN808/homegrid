@@ -29,15 +29,15 @@ def step(env, window, action, agent_view=False):
     # print(f"==>> obs: {obs}")
     # print(f"==>> info['text_observation']: {info['text_observation']}")
     # print(info["symbolic_state"])
-    token = tok.decode([obs["token"]])
+    # token = tok.decode([obs["token"]])
     print(f"step={env.step_cnt}, reward={reward:.2f}")
     # print("Token: ", token)
-    print("Language: ", obs["log_language_info"] if "log_language_info" in obs else "None")
+    # print("Language: ", obs["log_language_info"] if "log_language_info" in obs else "None")
     print("Task: ", env.task)
     # print("-"*20)kg
-    window.set_caption(
-        f"r={reward:.2f} token_id={obs['token']} token="
-        f"{token} \ncurrent: {obs['log_language_info'][:50]}...")
+    # window.set_caption(
+    #     f"r={reward:.2f} token_id={obs['token']} token="
+    #     f"{token} \ncurrent: {obs['log_language_info'][:50]}...")
 
     if terminated:
         print(f"terminated! r={reward}")
@@ -106,7 +106,7 @@ if __name__ == "__main__":
         "--seed",
         type=int,
         help="random seed to generate the environment with",
-        default=-1,
+        default=7,
     )
     parser.add_argument(
         "--tile_size", type=int, help="size at which to render tiles", default=32

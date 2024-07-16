@@ -341,14 +341,14 @@ class TextObservationWrapper(gym.Wrapper):
     def step(self, action):
         observation, reward, done, truncated, info = self.env.step(action)
         # TODO: Putting text observation in info for now, but should be in observation, causes observation space keys error
-        info['text_observation'] = self.generate_text_observation(info['cell_3x3'], info['floor_3x3'])
+        # info['text_observation'] = self.generate_text_observation(info['cell_3x3'], info['floor_3x3'])
         observation['text'] = self.generate_text_observation(info['cell_3x3'], info['floor_3x3'])
         return observation, reward, done, truncated, info
 
     def reset(self, **kwargs):
         observation, info = self.env.reset(**kwargs)
         # TODO: Putting text observation in info for now, but should be in observation, causes observation space keys error
-        info['text_observation'] = self.generate_text_observation(info['cell_3x3'], info['floor_3x3'])
+        # info['text_observation'] = self.generate_text_observation(info['cell_3x3'], info['floor_3x3'])
         observation['text'] = self.generate_text_observation(info['cell_3x3'], info['floor_3x3'])
         return observation, info
 
