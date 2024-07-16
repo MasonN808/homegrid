@@ -12,16 +12,16 @@ class HomeGrid:
     def __init__(self, lang_types, *args, **kwargs):
         env = HomeGridBase(*args, **kwargs)
         env = RGBImgPartialObsWrapper(env)
-        env = FilterObsWrapper(env, ["image"])
+        env = FilterObsWrapper(env, ["text"])
         env = TextObservationWrapper(env)
         env = MultitaskWrapper(env)
-        env = LanguageWrapper(
-            env,
-            preread_max=28,
-            repeat_task_every=20,
-            p_language=0.2,
-            lang_types=lang_types,
-        )
+        # env = LanguageWrapper(
+        #     env,
+        #     preread_max=28,
+        #     repeat_task_every=20,
+        #     p_language=0.2,
+        #     lang_types=lang_types,
+        # )
         self.env = env
 
     def __getattr__(self, name):
