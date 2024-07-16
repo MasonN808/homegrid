@@ -46,7 +46,7 @@ class HomeGridBase(MiniGridEnv):
         num_trashobjs=2,
         view_size=3,
         max_steps=100,
-        p_teleport=0.05,
+        p_teleport=0, # default .05
         max_objects=4,
         p_unsafe=0.0,
         fixed_state=None,
@@ -183,7 +183,7 @@ class HomeGridBase(MiniGridEnv):
   def _maybe_spawn(self):
     new_objs = [t for t in TRASH if t not in \
         [o.name for o in self.objs]]
-    if np.random.rand() < 0.1 * len(new_objs):
+    if np.random.rand() < 0 * len(new_objs): # NOTE: Setting this to 0 since sometimes tasks are impossible if an object does not spawn
       trash = random.choice(new_objs)
       obj = Pickable(trash, self.textures[trash], invisible=True)
       poss = random.choice([
@@ -216,9 +216,64 @@ class HomeGridBase(MiniGridEnv):
     self.unsafe_poss = {}
     self.unsafe_end = -1
     self.unsafe_name = None
+
+    # Get the position in front of the agent after turning
+    fwd_pos = self.front_pos
+
+    # Get the contents of the cell in front of the agent
+    fwd_cell = self.grid.get(*fwd_pos)
+    fwd_floor = self.grid.get_floor(*fwd_pos)
+
+    right_pos = self.right_pos
+    left_pos = self.left_pos
+    right_pos = self.right_pos
+    back_pos = self.back_pos
+    front_right_pos = self.front_right_pos
+    front_left_pos = self.front_left_pos
+    back_left_pos = self.back_left_pos
+    back_right_pos = self.back_right_pos
+
+    current_cell = self.grid.get(*self.agent_pos)
+    current_floor = self.grid.get_floor(*self.agent_pos)
+
+    left_cell = self.grid.get(*left_pos)
+    left_floor = self.grid.get_floor(*left_pos)
+
+    right_cell = self.grid.get(*right_pos)
+    right_floor = self.grid.get_floor(*right_pos)
+
+    back_cell = self.grid.get(*back_pos)
+    back_floor = self.grid.get_floor(*back_pos)
+
+    fwd_right_cell = self.grid.get(*front_right_pos)
+    fwd_right_floor = self.grid.get_floor(*front_right_pos)
+
+    fwd_left_cell = self.grid.get(*front_left_pos)
+    fwd_left_floor = self.grid.get_floor(*front_left_pos)
+
+    back_left_cell = self.grid.get(*back_left_pos)
+    back_left_floor = self.grid.get_floor(*back_left_pos)
+
+    back_right_cell = self.grid.get(*back_right_pos)
+    back_right_floor = self.grid.get_floor(*back_right_pos)
+
+    cell_3x3 = [
+        [fwd_left_cell.name if fwd_left_cell else None, fwd_cell.name if fwd_cell else None, fwd_right_cell.name if fwd_right_cell else None],
+        [left_cell.name if left_cell else None, current_cell.name if current_cell else None, right_cell.name if right_cell else None],
+        [back_left_cell.name if back_left_cell else None, back_cell.name if back_cell else None, back_right_cell.name if back_right_cell else None]
+    ]
+    # print(f"==>> array_3x3: {cell_3x3}")
+
+    floor_3x3 = [
+        [fwd_left_floor.name if fwd_left_floor else None, fwd_floor.name if fwd_floor else None, fwd_right_floor.name if fwd_right_floor else None],
+        [left_floor.name if left_floor else None, current_floor.name if current_floor else None, right_floor.name if right_floor else None],
+        [back_left_floor.name if back_left_floor else None, back_floor.name if back_floor else None, back_right_floor.name if back_right_floor else None]
+    ]
     info = {
         "symbolic_state": self.get_full_symbolic_state(),
-        "events": []
+        "events": [],
+        "cell_3x3": cell_3x3,
+        "floor_3x3": floor_3x3,
     }
     return obs, info
 
@@ -340,14 +395,14 @@ class HomeGridBase(MiniGridEnv):
         [left_cell.name if left_cell else None, current_cell.name if current_cell else None, right_cell.name if right_cell else None],
         [back_left_cell.name if back_left_cell else None, back_cell.name if back_cell else None, back_right_cell.name if back_right_cell else None]
     ]
-    print(f"==>> array_3x3: {cell_3x3}")
+    # print(f"==>> array_3x3: {cell_3x3}")
 
     floor_3x3 = [
         [fwd_left_floor.name if fwd_left_floor else None, fwd_floor.name if fwd_floor else None, fwd_right_floor.name if fwd_right_floor else None],
         [left_floor.name if left_floor else None, current_floor.name if current_floor else None, right_floor.name if right_floor else None],
         [back_left_floor.name if back_left_floor else None, back_floor.name if back_floor else None, back_right_floor.name if back_right_floor else None]
     ]
-    print(f"==>> floor_3x3: {floor_3x3}")
+    # print(f"==>> floor_3x3: {floor_3x3}")
 
 
     # For rendering purposes
