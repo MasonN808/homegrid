@@ -1051,6 +1051,9 @@ class MiniGridEnv(gym.Env):
             if fwd_cell is not None and fwd_cell.type == "goal":
                 terminated = True
                 reward = self._reward()
+                # print("".center(50, "-"))
+                # print(f"==>> reward: {reward}")
+
             if fwd_cell is not None and fwd_cell.type == "lava":
                 terminated = True
 
