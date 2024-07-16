@@ -331,14 +331,25 @@ class LanguageWrapper(gym.Wrapper):
 class TextObservationWrapper(gym.Wrapper):
     def __init__(self, env):
         super().__init__(env)
+        new_text_space = spaces.Text(
+          max_length=10000,
+        )
+        self.observation_space = spaces.Dict(
+            {**self.observation_space.spaces, "text": new_text_space}
+        )
 
     def step(self, action):
         observation, reward, done, truncated, info = self.env.step(action)
+        # TODO: Putting text observation in info for now, but should be in observation, causes observation space keys error
         info['text_observation'] = self.generate_text_observation(info['cell_3x3'], info['floor_3x3'])
+        observation['text'] = self.generate_text_observation(info['cell_3x3'], info['floor_3x3'])
         return observation, reward, done, truncated, info
 
     def reset(self, **kwargs):
         observation, info = self.env.reset(**kwargs)
+        # TODO: Putting text observation in info for now, but should be in observation, causes observation space keys error
+        info['text_observation'] = self.generate_text_observation(info['cell_3x3'], info['floor_3x3'])
+        observation['text'] = self.generate_text_observation(info['cell_3x3'], info['floor_3x3'])
         return observation, info
 
     def generate_text_observation(self, cell_3x3, floor_3x3):
