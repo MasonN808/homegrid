@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import gym
+# import gymnasium as gymn
 
 from homegrid.language_wrappers import LanguageWrapper
 from homegrid.window import Window
@@ -14,22 +15,26 @@ def redraw(window, img):
 
 def reset(env, window, seed=None, agent_view=False):
     obs, _ = env.reset()
+    # print(f"==>> obs: {obs}")
     img = obs["image"] if agent_view else env.get_frame()
     redraw(window, img)
 
 
 def step(env, window, action, agent_view=False):
     obs, reward, terminated, truncated, info = env.step(action)
+    print(f"==>> info: {info}")
+    # print(f"==>> info: {info['text_observation']}")
     # print(f"==>> obs: {obs}")
-    # print(f"==>> obs: {obs['image'].shape}")
-    print(f"==>> info['text_observation']: {info['text_observation']}")
+    print(f"==>> reward: {reward}")
+    # print(f"==>> obs: {obs}")
+    # print(f"==>> info['text_observation']: {info['text_observation']}")
     # print(info["symbolic_state"])
     token = tok.decode([obs["token"]])
-    # print(f"step={env.step_cnt}, reward={reward:.2f}")
+    print(f"step={env.step_cnt}, reward={reward:.2f}")
     # print("Token: ", token)
-    # print("Language: ", obs["log_language_info"] if "log_language_info" in obs else "None")
-    # print("Task: ", env.task)
-    # print("-"*20)
+    print("Language: ", obs["log_language_info"] if "log_language_info" in obs else "None")
+    print("Task: ", env.task)
+    # print("-"*20)kg
     window.set_caption(
         f"r={reward:.2f} token_id={obs['token']} token="
         f"{token} \ncurrent: {obs['log_language_info'][:50]}...")
@@ -46,7 +51,7 @@ def step(env, window, action, agent_view=False):
 
 
 def key_handler(env, window, event, agent_view=False):
-    print("pressed", event.key)
+    # print("pressed", event.key)
     step_ = lambda a: step(env, window, a, agent_view)
 
     if event.key == "escape":
@@ -95,7 +100,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--env", help="gym environment to load", default="homegrid-task"
+        "--env", help="gym environment to load", default="homegrid-dynamics"
     )
     parser.add_argument(
         "--seed",
@@ -115,6 +120,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     env = gym.make(args.env, disable_env_checker=True)
+    # env = gym.make(args.env)
 
     for k in plt.rcParams:
       if "keymap" in k:
