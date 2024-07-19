@@ -302,7 +302,7 @@ class HomeGridBase(MiniGridEnv):
         action == self.actions.up or \
         action == self.actions.down:
       self.agent_dir = HomeGridBase.ac2dir[action]
-     # Get the position in front of the agent after turning
+      # Get the position in front of the agent after turning
       fwd_pos = self.front_pos
 
       # Get the contents of the cell in front of the agent
@@ -357,7 +357,7 @@ class HomeGridBase(MiniGridEnv):
       self.render_with_text()
     obs = self.gen_obs()
 
-    right_pos = self.right_pos
+    forward_pos = self.front_pos
     left_pos = self.left_pos
     right_pos = self.right_pos
     back_pos = self.back_pos
@@ -368,6 +368,9 @@ class HomeGridBase(MiniGridEnv):
 
     current_cell = self.grid.get(*self.agent_pos)
     current_floor = self.grid.get_floor(*self.agent_pos)
+
+    fwd_cell = self.grid.get(*forward_pos)
+    fwd_floor = self.grid.get_floor(*forward_pos)
 
     left_cell = self.grid.get(*left_pos)
     left_floor = self.grid.get_floor(*left_pos)
