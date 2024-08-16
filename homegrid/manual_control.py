@@ -22,18 +22,20 @@ def reset(env, window, seed=None, agent_view=False):
 
 def step(env, window, action, agent_view=False):
     obs, reward, terminated, truncated, info = env.step(action)
-    print(f"==>> info: {info}")
+    # print(f"==>> info: {info}")
     # print(f"==>> info: {info['text_observation']}")
     # print(f"==>> obs: {obs}")
-    print(f"==>> reward: {reward}")
+    # print(f"==>> reward: {reward}")
     # print(f"==>> obs: {obs}")
     # print(f"==>> info['text_observation']: {info['text_observation']}")
     # print(info["symbolic_state"])
     # token = tok.decode([obs["token"]])
-    print(f"step={env.step_cnt}, reward={reward:.2f}")
+    # print(f"step={env.step_cnt}, reward={reward:.2f}")
     # print("Token: ", token)
     # print("Language: ", obs["log_language_info"] if "log_language_info" in obs else "None")
     print("Task: ", env.task)
+    print(env.agent_dir)
+    print(env.agent_pos)
     # print("-"*20)kg
     # window.set_caption(
     #     f"r={reward:.2f} token_id={obs['token']} token="

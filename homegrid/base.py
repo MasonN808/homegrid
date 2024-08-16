@@ -637,7 +637,7 @@ class MiniGridEnv(gym.Env):
         self.tile_size = tile_size
         self.agent_pov = agent_pov
 
-    def reset(self, *, seed=None, options=None):
+    def reset(self, *, seed=7, options=None):
         super().reset(seed=seed)
 
         # Reinitialize episode-specific variables
@@ -686,6 +686,32 @@ class MiniGridEnv(gym.Env):
             sample_hash.update(str(item).encode("utf8"))
 
         return sample_hash.hexdigest()[:size]
+    
+    def is_wall(self, x, y):
+        """
+        Check if the given position (x, y) is a wall in the grid.
+        """
+        obj = self.grid.get(x, y)
+        # print(f"==>> obj: {obj}")
+        # return isinstance(obj, Wall)
+        return obj is not None and not obj.agent_can_overlap()
+    
+    def is_object(self, x, y):
+        """
+        Check if the given position (x, y) is occupied by an object that the agent cannot overlap with.
+        """
+        obj = self.grid.get_floor(x, y)  # Use get, not get_floor
+        return obj is not None and not obj.agent_can_overlap()
+    
+    def is_occupied(self, x, y):
+        """
+        Check if the given position (x, y) is occupied by a wall or any other object that cannot be overlapped.
+        """
+        # print(f"==>> x: {x}")
+        # print(f"==>> y: {y}")
+        # print(f"==>> self.is_object(x, y): {self.is_object(x, y)}")
+        # print(f"==>> self.is_wall(x, y): {self.is_wall(x, y)}")
+        return self.is_object(x, y) or self.is_wall(x, y)
 
     @property
     def steps_remaining(self):

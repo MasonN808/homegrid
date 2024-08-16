@@ -207,7 +207,7 @@ class HomeGridBase(MiniGridEnv):
       return can
     return None
 
-  def reset(self, *, seed=None, options=None):
+  def reset(self, *, seed=7, options=None):
     self.prev_action = "Reset"
     obs, info = super().reset(seed=seed, options=options)
     # All events in the episode so far

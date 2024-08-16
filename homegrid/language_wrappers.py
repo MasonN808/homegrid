@@ -73,6 +73,7 @@ class MultitaskWrapper(gym.Wrapper):
             return int(obj["room"] == room_code)
     else:
         raise ValueError(f"Unknown task type {task_type}")
+
     def dist_goal(symbolic_state):
       goal_name = obj_name
       if task_type == MultitaskWrapper.Tasks.cleanup:
@@ -81,10 +82,19 @@ class MultitaskWrapper(gym.Wrapper):
       pos = [o for o in symbolic_state["objects"] if \
           o["name"] == goal_name][0]["pos"]
       return abs(self.agent_pos[0] - pos[0]) + abs(self.agent_pos[1] - pos[1])
+    
+    def get_goal_pos(symbolic_state):
+      goal_name = obj_name
+      if task_type == MultitaskWrapper.Tasks.cleanup:
+        goal_name = bin_name if symbolic_state["agent"]["carrying"] == obj_name \
+            else obj_name
+      return [o for o in symbolic_state["objects"] if \
+          o["name"] == goal_name][0]["pos"]
 
     self.task = task
     self.reward_fn = reward_fn
     self.dist_goal = dist_goal
+    self.get_goal_pos = get_goal_pos
     self.subtask_done = False
     self.start_step = self.step_cnt
 
