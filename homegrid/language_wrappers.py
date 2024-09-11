@@ -25,9 +25,15 @@ class MultitaskWrapper(gym.Wrapper):
   def __init__(self, env):
     super().__init__(env)
     self.tasks = list(MultitaskWrapper.Tasks)
+    self.task_type = None
 
-  def sample_task(self):
-    task_type = random.choice(self.tasks)
+  def sample_task(self, task_type):
+    if task_type is not None:
+      self.task_type = task_type
+      task_type = MultitaskWrapper.Tasks[task_type]
+    else:
+      print("Sampling task")
+      task_type = random.choice(self.tasks)
 
     if task_type == MultitaskWrapper.Tasks.find:
       obj_name = random.choice(self.env.objs).name
@@ -35,8 +41,13 @@ class MultitaskWrapper(gym.Wrapper):
       def reward_fn(symbolic_state):
         return int(symbolic_state["front_obj"] == obj_name)
     elif task_type == MultitaskWrapper.Tasks.get:
-      obj_name = random.choice([ob for ob in self.env.objs if \
-                                isinstance(ob, Pickable)]).name
+      # obj_name = random.choice([ob for ob in self.env.objs if \
+      #                           isinstance(ob, Pickable)]).name
+      # Instead of random, do it in order
+      pickable_objects = [ob for ob in self.env.objs if isinstance(ob, Pickable)]
+      pickable_objects.sort(key=lambda x: x.name)
+      obj_name = pickable_objects[0].name
+
       task = f"get the {obj_name}"
       def reward_fn(symbolic_state):
         return int(symbolic_state["agent"]["carrying"] == obj_name)
@@ -98,13 +109,13 @@ class MultitaskWrapper(gym.Wrapper):
     self.subtask_done = False
     self.start_step = self.step_cnt
 
-  def reset(self):
-    obs, info = self.env.reset()
+  def reset(self, task_type: str = None, options: dict = None):
+    obs, info = self.env.reset(options=options)
     self.step_cnt = 0
     self.start_step = 0
     self.accomplished_tasks = []
     self.task_times = []
-    self.sample_task()
+    self.sample_task(task_type=task_type)
     info.update({
         "log_timesteps_with_task": self.step_cnt - self.start_step,
         "log_new_task": True,
@@ -126,7 +137,7 @@ class MultitaskWrapper(gym.Wrapper):
     if rew == 1:
       self.accomplished_tasks.append(self.task)
       self.task_times.append(self.step_cnt - self.start_step)
-      self.sample_task()
+      self.sample_task(self.task_type)
       info.update({
         "log_timesteps_with_task": self.step_cnt - self.start_step,
         "log_accomplished_tasks": self.accomplished_tasks,

@@ -43,7 +43,7 @@ class HomeGridBase(MiniGridEnv):
   def __init__(self,
         layout=ThreeRoom,
         num_trashcans=2,
-        num_trashobjs=2,
+        num_trashobjs=4, # Increasing from 2 to 4 to populate with all trash objects
         view_size=3,
         max_steps=100,
         p_teleport=0, # default .05
@@ -128,7 +128,13 @@ class HomeGridBase(MiniGridEnv):
     trashobj_objs = []
     for i, trash in enumerate(trash_objs):
       obj = Pickable(trash, self.textures[trash])
-      pos = self.place_obj(obj, top=poss[i], size=(1,1), max_tries=5)
+      # Make only bottles stationary for experiments (Clean up code later)
+      if trash == "bottle":
+        # print(self.layout.valid_poss["obj"])
+        poss[i] = self.layout.valid_poss["obj"][2]
+        pos = self.place_obj(obj, top=poss[i], size=(1,1), max_tries=5)
+      else:
+        pos = self.place_obj(obj, top=poss[i], size=(1,1), max_tries=5)
       trashobj_objs.append(obj)
       self.objs.append(obj)
 

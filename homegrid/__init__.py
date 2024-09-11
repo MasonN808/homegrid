@@ -28,8 +28,8 @@ class HomeGrid:
     def __getattr__(self, name):
         return getattr(self.env, name)
 
-    def reset(self):
-        return self.env.reset()
+    def reset(self, task_type: str, options: dict, **kwargs):
+        return self.env.reset(task_type, options)
 
     def step(self, action):
         return self.env.step(action)

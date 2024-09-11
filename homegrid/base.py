@@ -638,11 +638,18 @@ class MiniGridEnv(gym.Env):
         self.agent_pov = agent_pov
 
     def reset(self, *, seed=7, options=None):
+        # TODO: options does not effect agent position and direction
+        if options is not None:
+            self.agent_pos = options.get("agent_pos", (-1, -1))
+            self.agent_dir = options.get("agent_dir", -1)
+
+        # print(f"==>> self.agent_pos: {self.agent_pos}")
+        # print(f"==>> self.agent_dir: {self.agent_dir}")
         super().reset(seed=seed)
 
         # Reinitialize episode-specific variables
-        self.agent_pos = (-1, -1)
-        self.agent_dir = -1
+        # self.agent_pos = (-1, -1)
+        # self.agent_dir = -1
 
         # Generate a new random grid at the start of each episode
         self._gen_grid(self.width, self.height)
@@ -670,6 +677,8 @@ class MiniGridEnv(gym.Env):
         # Return first observation
         obs = self.gen_obs()
 
+        # print(f"==>> self.agent_pos: {self.agent_pos}")
+        # print(f"==>> self.agent_dir: {self.agent_dir}")
         return obs, {}
 
     def _init_inventory(self):
@@ -860,6 +869,7 @@ class MiniGridEnv(gym.Env):
         self.agent_pos = (-1, -1)
         pos = self.place_obj(None, top, size, max_tries=max_tries)
         self.agent_pos = pos
+        # print(f"==>> pos: {pos}")
 
         if rand_dir:
             self.agent_dir = self._rand_int(0, 4)
