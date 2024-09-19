@@ -268,7 +268,6 @@ class HomeGridBase(MiniGridEnv):
         [left_cell.name if left_cell else None, current_cell.name if current_cell else None, right_cell.name if right_cell else None],
         [back_left_cell.name if back_left_cell else None, back_cell.name if back_cell else None, back_right_cell.name if back_right_cell else None]
     ]
-    # print(f"==>> array_3x3: {cell_3x3}")
 
     floor_3x3 = [
         [fwd_left_floor.name if fwd_left_floor else None, fwd_floor.name if fwd_floor else None, fwd_right_floor.name if fwd_right_floor else None],
@@ -404,14 +403,12 @@ class HomeGridBase(MiniGridEnv):
         [left_cell.name if left_cell else None, current_cell.name if current_cell else None, right_cell.name if right_cell else None],
         [back_left_cell.name if back_left_cell else None, back_cell.name if back_cell else None, back_right_cell.name if back_right_cell else None]
     ]
-    # print(f"==>> array_3x3: {cell_3x3}")
 
     floor_3x3 = [
         [fwd_left_floor.name if fwd_left_floor else None, fwd_floor.name if fwd_floor else None, fwd_right_floor.name if fwd_right_floor else None],
         [left_floor.name if left_floor else None, current_floor.name if current_floor else None, right_floor.name if right_floor else None],
         [back_left_floor.name if back_left_floor else None, back_floor.name if back_floor else None, back_right_floor.name if back_right_floor else None]
     ]
-    # print(f"==>> floor_3x3: {floor_3x3}")
 
 
     # For rendering purposes
