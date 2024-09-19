@@ -26,6 +26,7 @@ class MultitaskWrapper(gym.Wrapper):
     super().__init__(env)
     self.tasks = list(MultitaskWrapper.Tasks)
     self.task_type = None
+    self.options = None
 
   def sample_task(self, task_type):
     if task_type is not None:
@@ -108,8 +109,23 @@ class MultitaskWrapper(gym.Wrapper):
     self.get_goal_pos = get_goal_pos
     self.subtask_done = False
     self.start_step = self.step_cnt
+  
+  def add_extra_features(self, obs, task_id, n_tasks):
+    full_symbolic_state = self.env.get_full_symbolic_state()
+    goal_pos = self.get_goal_pos(full_symbolic_state)
+
+    agent_pos = (self.env.agent_pos[0], self.env.agent_pos[1])
+    goal_pos = (goal_pos[0], goal_pos[1])
+    normalized_task_id = task_id / n_tasks
+
+    obs['task_id'] = normalized_task_id  # Add the task_id as a new entry in the dictionary
+    obs['positions'] = [agent_pos, goal_pos]
+    # obs['direction'] = self.env.agent_dir
+    return obs
 
   def reset(self, task_type: str = None, options: dict = None):
+    if options:
+      self.options = options
     obs, info = self.env.reset(options=options)
     self.step_cnt = 0
     self.start_step = 0
@@ -121,11 +137,15 @@ class MultitaskWrapper(gym.Wrapper):
         "log_new_task": True,
         "log_dist_goal": self.dist_goal(info["symbolic_state"])
         })
+    if options["add_taskID_and_position_features"]:
+      obs = self.add_extra_features(obs, options["taskID"], options["n_tasks"])
     return obs, info
 
   def step(self, action):
     self.step_cnt += 1
     obs, rew, term, trunc, info = self.env.step(action)
+    if self.options["add_taskID_and_position_features"]:
+      obs = self.add_extra_features(obs, self.options["taskID"], self.options["n_tasks"])
     info.update({
         "log_timesteps_with_task": self.step_cnt - self.start_step,
         "log_new_task": False,
